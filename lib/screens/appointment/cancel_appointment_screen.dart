@@ -57,21 +57,18 @@ class _CancelAppointmentScreenState extends State<CancelAppointmentScreen> {
 
   Future<void> _handleCancel() async {
     showLoadingAnimated(context);
+    if (_cancelJanjiTemu.text.isEmpty) {
+      context.toast.showError("Field tidak boleh kosong");
+      closeLoadingDialog(context);
+      return;
+    }
     try {
       await APIService().cancelAppointment(
         widget.appointmentId,
         _cancelJanjiTemu.text,
       );
       context.toast.showSuccess("Janji temu berhasil dibatalkan");
-      // Fluttertoast.showToast(
-      //   msg: "Janji temu berhasil dibatalkan",
-      //   toastLength: Toast.LENGTH_SHORT,
-      //   gravity: ToastGravity.BOTTOM,
-      //   timeInSecForIosWeb: 1,
-      //   backgroundColor: Colors.green,
-      //   textColor: Colors.white,
-      //   fontSize: 16.0,
-      // );
+
       closeLoadingDialog(context);
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const AppointmentPage()),
@@ -79,15 +76,6 @@ class _CancelAppointmentScreenState extends State<CancelAppointmentScreen> {
       );
     } catch (e) {
       context.toast.showError("Janji temu gagal dibatalkan: $e");
-      // Fluttertoast.showToast(
-      //   msg: "Janji temu gagal dibatalkan",
-      //   toastLength: Toast.LENGTH_SHORT,
-      //   gravity: ToastGravity.BOTTOM,
-      //   timeInSecForIosWeb: 1,
-      //   backgroundColor: Colors.red,
-      //   textColor: Colors.white,
-      //   fontSize: 16.0,
-      // );
     }
   }
 
@@ -168,7 +156,7 @@ class _CancelAppointmentScreenState extends State<CancelAppointmentScreen> {
                   const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () {
-                      if (_isButtonEnabled.value) _handleCancel();
+                      _handleCancel();
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
@@ -193,3 +181,4 @@ class _CancelAppointmentScreenState extends State<CancelAppointmentScreen> {
     );
   }
 }
+
